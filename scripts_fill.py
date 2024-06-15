@@ -26,6 +26,26 @@ def get_random_category():
     return random.choice(categories)
 
 
+cities_countries = [
+    {"City": "New York", "Country": "USA"},
+    {"City": "Los Angeles", "Country": "USA"},
+    {"City": "London", "Country": "UK"},
+    {"City": "Paris", "Country": "France"},
+    {"City": "Berlin", "Country": "Germany"},
+    {"City": "Tokyo", "Country": "Japan"},
+    {"City": "Sydney", "Country": "Australia"},
+    {"City": "Toronto", "Country": "Canada"},
+    {"City": "Mumbai", "Country": "India"},
+    {"City": "Beijing", "Country": "China"}
+]
+
+def get_random_city_country():
+    # Select a random city-country pair
+    city_country = random.choice(cities_countries)
+    # Format the result as a string
+    return f"{city_country['City']}, {city_country['Country']}"
+
+
 from datetime import datetime, timedelta
 import random
 
@@ -100,8 +120,7 @@ bios = [
 
 # Generate a random password (hashed for security)
 def generate_password():
-    password = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz0123456789', k=10))
-    return hashlib.sha256(password.encode()).hexdigest()
+    return 'password ou quoi'
 
 # Generate a random date of birth
 def random_date_of_birth(start_year=1990, end_year=2010):
@@ -120,10 +139,10 @@ post_entries = []
 
 
 
-recipe_sql = "INSERT INTO post (IDPOST, TITLE, IMAGE, DIFFICULTY, DURATION, NBPEOPLE, CATEGORY, TYPE) VALUES\n"
+recipe_sql = "INSERT INTO recipe (IDPOST, TITLE, IMAGE, DIFFICULTY, DURATION, NBPEOPLE, CATEGORY, TYPE) VALUES\n"
 recipe_entries = []
 
-comment_sql = "INSERT INTO comment(IDPOST, IDPOST_PARENT) VALUES"
+comment_sql = "INSERT INTO comment(IDPOST, IDPOST_PARENT) VALUES\n"
 comment_entries = []
 
 
@@ -145,20 +164,20 @@ nbpostspuser = 10
 nblikeuser = 10
 nbsaveduser = 10
 
-for i in range(1, nbuser):
+for i in range(1, nbuser+1):
     print("user added")
     first_name = random.choice(first_names)
     last_name = random.choice(last_names)
     username = f"{first_name.lower()}{last_name.lower()}{i}"
     email = f"{first_name.lower()}@{last_name.lower()}.net"
     date_of_birth = random_date_of_birth()
-    location = generate_powerbi_compatible_city_country()
+    location = get_random_city_country()
     biography = random.choice(bios)
     profile_picture = f"{username}.png"
     password = generate_password()
     account_creation = get_random_date(date_of_birth,today)
     user_entries.append(f"('{user_id}','{username}', '{email}', '{date_of_birth}', '{location}', '{biography}', 0, '{profile_picture}', '{password}', '{account_creation}')")
-    for y in range(1,nbpostspuser):
+    for y in range(1,nbpostspuser+1):
         post_entries.append(f"('{post_id}', '{user_id}', '{"default body"}', '{get_random_date(account_creation,today)}', '{random.randint(0,1)}')")
         rng = random.randint(1,2)
         if(rng == 1):
@@ -171,12 +190,28 @@ for i in range(1, nbuser):
         post_id += 1
     print("post added")
 
-    for z in range(1,nblikeuser):
+
+    list_temp = []
+    for z in range(1,nblikeuser+1):
         print("like added")
 
-        like_entries.append(f"('{user_id}', '{random.randint(1,int(nbuser*nbpostspuser*0.9))}', '{get_random_date(account_creation,today)}')")
+        temp_id = random.randint(1,int(nbuser*nbpostspuser*0.9))
+        while(temp_id in list_temp):
+            temp_id = random.randint(1,int(nbuser*nbpostspuser*0.9))
+
+        list_temp.append(temp_id)
+
+        like_entries.append(f"('{user_id}', '{temp_id}', '{get_random_date(account_creation,today)}')")
+
+    list_temp = []
     for a in range(1,nbsaveduser):
-        save_entries.append(f"('{user_id}', '{random.randint(1,int(nbuser*nbpostspuser*0.9))}', '{get_random_date(account_creation,today)}')")
+
+        temp_id = random.randint(1,int(nbuser*nbpostspuser*0.9))
+        while(temp_id in list_temp):
+            temp_id = random.randint(1,int(nbuser*nbpostspuser*0.9))
+
+        list_temp.append(temp_id)
+        save_entries.append(f"('{user_id}', '{temp_id}', '{get_random_date(account_creation,today)}')")
 
     user_id += 1
 
@@ -188,6 +223,7 @@ for i in range(1, nbuser):
 
 users_sql += ",\n".join(user_entries) + ";\n\n"
 post_sql += ",\n".join(post_entries) + ";\n\n"
+recipe_sql += ",\n".join(recipe_entries) + ";\n\n"
 comment_sql += ",\n".join(comment_entries) + ";\n\n"
 like_sql += ",\n".join(like_entries) + ";\n\n"
 save_sql += ",\n".join(save_entries) + ";\n\n"
@@ -200,6 +236,7 @@ with open(filename, 'w', encoding='utf-8') as file:
     # Write the SQL content to the file
     file.write(users_sql)
     file.write(post_sql)
+    file.write(recipe_sql)
     file.write(comment_sql)
     file.write(like_sql)
     file.write(save_sql)
