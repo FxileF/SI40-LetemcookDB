@@ -1,5 +1,84 @@
 import random
 import hashlib
+from faker import Faker
+
+def generate_powerbi_compatible_city_country():
+    # Initialize Faker with multiple locales for diverse city and country generation
+    locales = ['en_US', 'en_GB', 'fr_FR', 'de_DE', 'es_ES', 'it_IT', 'nl_NL', 'pt_BR', 'ja_JP', 'zh_CN']
+    fake = Faker(locales)
+    
+    # Generate a random city and country
+    city = fake.city()
+    country = fake.country()
+    
+    # Combine the city and country into a single string
+    city_country = f"{city}, {country}"
+    
+    return city_country
+
+def get_random_category():
+    categories = [
+        "starter",
+        "main course",
+        "dessert"
+    ]
+    
+    return random.choice(categories)
+
+
+from datetime import datetime, timedelta
+import random
+
+def get_random_date(start_date, end_date):
+    """
+    Generate a random date between start_date and end_date.
+    
+    Args:
+    start_date (str): The start date in 'YYYY-MM-DD' format.
+    end_date (str): The end date in 'YYYY-MM-DD' format.
+    
+    Returns:
+    str: A random date in 'YYYY-MM-DD' format.
+    """
+    start_date = datetime.strptime(start_date, '%Y-%m-%d')
+    end_date = datetime.strptime(end_date, '%Y-%m-%d')
+    
+    # Generate a random date between start_date and end_date
+    random_date = start_date + timedelta(
+        days=random.randint(0, (end_date - start_date).days)
+    )
+    
+    return random_date.strftime('%Y-%m-%d')
+
+
+
+def get_random_culinary_type():
+    culinary_types = [
+        "Italian",
+        "Chinese",
+        "Mexican",
+        "Indian",
+        "French",
+        "Thai",
+        "Japanese",
+        "Greek",
+        "Spanish",
+        "American",
+        "Mediterranean",
+        "Vietnamese",
+        "Turkish",
+        "Lebanese",
+        "Korean",
+        "Brazilian",
+        "Moroccan",
+        "Caribbean",
+        "Ethiopian",
+        "German"
+    ]
+    
+    return random.choice(culinary_types)
+
+
 
 # List of sample first names and last names
 first_names = ["John", "Jane", "Alex", "Emily", "Chris", "Katie", "Michael", "Sarah", "David", "Laura"]
@@ -32,39 +111,102 @@ def random_date_of_birth(start_year=1990, end_year=2010):
     return f"{year:04d}-{month:02d}-{day:02d}"
 
 # Generate the SQL insert statements
-users_sql = "INSERT INTO user (username, email, DATEBIRTH, ADRESS, biography, isADMIN, PROFILEPICTURE, PASSWORD) VALUES\n"
+users_sql = "INSERT INTO user (userid, username, email, DATEBIRTH, ADRESS, biography, isADMIN, PROFILEPICTURE, PASSWORD, ACCOUNTCREATION) VALUES\n"
 user_entries = []
 
-//CREATE TABLE `user` (
-  `USERNAME` char(50) DEFAULT NULL,
-  `USERID` int(2) NOT NULL,
-  `EMAIL` char(50) DEFAULT NULL,
-  `PASSWORD` char(50) DEFAULT NULL,
-  `ACCOUNTCREATION` date DEFAULT current_timestamp(),
-  `PROFILEPICTURE` char(50) DEFAULT 'default.png',
-  `BIOGRAPHY` text DEFAULT NULL,
-  `DATEBIRTH` date DEFAULT NULL,
-  `ADRESS` char(50) DEFAULT NULL,
-  `ISADMIN` tinyint(1) DEFAULT 0
-)
+
+post_sql = "INSERT INTO post (IDPOST, USERID, BODY, POSTDATE, SENSIBLE) VALUES\n"
+post_entries = []
 
 
-for i in range(1, 101):
+
+recipe_sql = "INSERT INTO post (IDPOST, TITLE, IMAGE, DIFFICULTY, DURATION, NBPEOPLE, CATEGORY, TYPE) VALUES\n"
+recipe_entries = []
+
+comment_sql = "INSERT INTO comment(IDPOST, IDPOST_PARENT) VALUES"
+comment_entries = []
+
+
+like_sql = "INSERT INTO likes (USERID, IDPOST, LIKEDATE) VALUES\n"
+like_entries = []
+
+
+save_sql = "INSERT INTO saved(USERID, IDPOST, SAVEDATE) VALUES\n"
+save_entries = []
+
+
+post_id = 1
+user_id = 1
+
+today = '2024-06-04'
+
+nbuser = 10
+nbpostspuser = 10
+nblikeuser = 10
+nbsaveduser = 10
+
+for i in range(1, nbuser):
+    print("user added")
     first_name = random.choice(first_names)
     last_name = random.choice(last_names)
     username = f"{first_name.lower()}{last_name.lower()}{i}"
     email = f"{first_name.lower()}@{last_name.lower()}.net"
     date_of_birth = random_date_of_birth()
-    location = f"City{random.randint(1, 100)}"
+    location = generate_powerbi_compatible_city_country()
     biography = random.choice(bios)
     profile_picture = f"{username}.png"
     password = generate_password()
-    user_entries.append(f"('{username}', '{email}', '{date_of_birth}', '{location}', '{biography}', 0, '{profile_picture}', '{password}')")
+    account_creation = get_random_date(date_of_birth,today)
+    user_entries.append(f"('{user_id}','{username}', '{email}', '{date_of_birth}', '{location}', '{biography}', 0, '{profile_picture}', '{password}', '{account_creation}')")
+    for y in range(1,nbpostspuser):
+        post_entries.append(f"('{post_id}', '{user_id}', '{"default body"}', '{get_random_date(account_creation,today)}', '{random.randint(0,1)}')")
+        rng = random.randint(1,2)
+        if(rng == 1):
+            title = "recipe_title" + str(post_id)
+            category = get_random_category()
+            types = get_random_culinary_type()
+            recipe_entries.append(f"('{post_id}', '{title}', '{"default.png"}', '{random.randint(1,10)}', '{random.randint(10,50)}', '{random.randint(1,4)}', '{category}', '{types}')")
+        if(rng == 2):
+            comment_entries.append(f"('{post_id}', '{random.randint(1,int(nbuser*nbpostspuser*0.9))}')")
+        post_id += 1
+    print("post added")
+
+    for z in range(1,nblikeuser):
+        print("like added")
+
+        like_entries.append(f"('{user_id}', '{random.randint(1,int(nbuser*nbpostspuser*0.9))}', '{get_random_date(account_creation,today)}')")
+    for a in range(1,nbsaveduser):
+        save_entries.append(f"('{user_id}', '{random.randint(1,int(nbuser*nbpostspuser*0.9))}', '{get_random_date(account_creation,today)}')")
+
+    user_id += 1
+
+
+
+
+
+
 
 users_sql += ",\n".join(user_entries) + ";\n\n"
+post_sql += ",\n".join(post_entries) + ";\n\n"
+comment_sql += ",\n".join(comment_entries) + ";\n\n"
+like_sql += ",\n".join(like_entries) + ";\n\n"
+save_sql += ",\n".join(save_entries) + ";\n\n"
+
+
+filename = 'letemcook_data.sql'
+
+
+with open(filename, 'w', encoding='utf-8') as file:
+    # Write the SQL content to the file
+    file.write(users_sql)
+    file.write(post_sql)
+    file.write(comment_sql)
+    file.write(like_sql)
+    file.write(save_sql)
 
 
 
 
 
-print(users_sql)
+
+
