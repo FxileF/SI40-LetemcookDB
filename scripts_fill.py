@@ -32,8 +32,22 @@ def random_date_of_birth(start_year=1990, end_year=2010):
     return f"{year:04d}-{month:02d}-{day:02d}"
 
 # Generate the SQL insert statements
-users_sql = "INSERT INTO users (username, email, date_of_birth, location, biography, isADMIN, profile_picture, password) VALUES\n"
+users_sql = "INSERT INTO user (username, email, DATEBIRTH, ADRESS, biography, isADMIN, PROFILEPICTURE, PASSWORD) VALUES\n"
 user_entries = []
+
+//CREATE TABLE `user` (
+  `USERNAME` char(50) DEFAULT NULL,
+  `USERID` int(2) NOT NULL,
+  `EMAIL` char(50) DEFAULT NULL,
+  `PASSWORD` char(50) DEFAULT NULL,
+  `ACCOUNTCREATION` date DEFAULT current_timestamp(),
+  `PROFILEPICTURE` char(50) DEFAULT 'default.png',
+  `BIOGRAPHY` text DEFAULT NULL,
+  `DATEBIRTH` date DEFAULT NULL,
+  `ADRESS` char(50) DEFAULT NULL,
+  `ISADMIN` tinyint(1) DEFAULT 0
+)
+
 
 for i in range(1, 101):
     first_name = random.choice(first_names)
@@ -47,6 +61,10 @@ for i in range(1, 101):
     password = generate_password()
     user_entries.append(f"('{username}', '{email}', '{date_of_birth}', '{location}', '{biography}', 0, '{profile_picture}', '{password}')")
 
-users_sql += ",\n".join(user_entries) + ";"
+users_sql += ",\n".join(user_entries) + ";\n\n"
+
+
+
+
 
 print(users_sql)
