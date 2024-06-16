@@ -213,7 +213,7 @@ for i in range(1, nbuser+1):
     account_creation = get_random_date(date_of_birth,today)
     user_entries.append(f"('{user_id}','{username}', '{email}', '{date_of_birth}', '{location}', '{biography}', 0, '{profile_picture}', '{password}', '{account_creation}')")
     for y in range(1,nbpostspuser+1):
-        post_entries.append(f"('{post_id}', '{user_id}', '{"default body"}', '{get_random_date(account_creation,today)}', '{random.randint(0,1)}')")
+        post_entries.append(f"('{post_id}', '{user_id}', '{"default body"}', '{get_random_date(account_creation,today)}', '{random.choices([0, 1], weights=[95, 5], k=1)[0]}')")
         rng = random.randint(1,2)
         if(rng == 1):
             title = "recipe_title" + str(post_id)
