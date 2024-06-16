@@ -1,53 +1,84 @@
 import random
-import hashlib
-from faker import Faker
-
-def generate_powerbi_compatible_city_country():
-    # Initialize Faker with multiple locales for diverse city and country generation
-    locales = ['en_US', 'en_GB', 'fr_FR', 'de_DE', 'es_ES', 'it_IT', 'nl_NL', 'pt_BR', 'ja_JP', 'zh_CN']
-    fake = Faker(locales)
-    
-    # Generate a random city and country
-    city = fake.city()
-    country = fake.country()
-    
-    # Combine the city and country into a single string
-    city_country = f"{city}, {country}"
-    
-    return city_country
+from datetime import datetime, timedelta
 
 def get_random_category():
-    categories = [
-        "starter",
-        "main course",
-        "dessert"
-    ]
+    categories = {
+        "starter" : 10,
+        "main course" : 55,
+        "dessert" : 45
+    }
+
+    elem = list(categories.keys())
+    weights = list(categories.values())
     
-    return random.choice(categories)
+    return random.choices(elem, weights=weights,k = 1)[0]
 
 
-cities_countries = [
-    {"City": "New York", "Country": "USA"},
-    {"City": "Los Angeles", "Country": "USA"},
-    {"City": "London", "Country": "UK"},
-    {"City": "Paris", "Country": "France"},
-    {"City": "Berlin", "Country": "Germany"},
-    {"City": "Tokyo", "Country": "Japan"},
-    {"City": "Sydney", "Country": "Australia"},
-    {"City": "Toronto", "Country": "Canada"},
-    {"City": "Mumbai", "Country": "India"},
-    {"City": "Beijing", "Country": "China"}
-]
+cities_countries = {
+    ("New York", "USA"): 8419000,
+    ("Los Angeles", "USA"): 3980000,
+    ("Chicago", "USA"): 2716000,
+    ("Houston", "USA"): 2328000,
+    ("Phoenix", "USA"): 1690000,
+    ("Philadelphia", "USA"): 1584000,
+    ("San Antonio", "USA"): 1547000,
+    ("San Diego", "USA"): 1424000,
+    ("Dallas", "USA"): 1340000,
+    ("San Jose", "USA"): 1035000,
+    ("London", "UK"): 8982000,
+    ("Manchester", "UK"): 553230,
+    ("Birmingham", "UK"): 1140000,
+    ("Glasgow", "UK"): 635640,
+    ("Liverpool", "UK"): 494814,
+    ("Paris", "France"): 2148000,
+    ("Marseille", "France"): 861635,
+    ("Lyon", "France"): 513275,
+    ("Toulouse", "France"): 471941,
+    ("Nice", "France"): 342295,
+    ("Berlin", "Germany"): 3645000,
+    ("Hamburg", "Germany"): 1841000,
+    ("Munich", "Germany"): 1472000,
+    ("Cologne", "Germany"): 1086000,
+    ("Frankfurt", "Germany"): 753056,
+    ("Tokyo", "Japan"): 13929000,
+    ("Osaka", "Japan"): 2750000,
+    ("Nagoya", "Japan"): 2296000,
+    ("Sapporo", "Japan"): 1952000,
+    ("Fukuoka", "Japan"): 1620000,
+    ("Sydney", "Australia"): 5312000,
+    ("Melbourne", "Australia"): 5078000,
+    ("Brisbane", "Australia"): 2514000,
+    ("Perth", "Australia"): 2059000,
+    ("Adelaide", "Australia"): 1345000,
+    ("Toronto", "Canada"): 2930000,
+    ("Vancouver", "Canada"): 675218,
+    ("Montreal", "Canada"): 1780000,
+    ("Calgary", "Canada"): 1239000,
+    ("Ottawa", "Canada"): 994837,
+    ("Mumbai", "India"): 20411000,
+    ("Delhi", "India"): 31870000,
+    ("Bangalore", "India"): 11847000,
+    ("Hyderabad", "India"): 10090000,
+    ("Chennai", "India"): 11324000,
+    ("Beijing", "China"): 21540000,
+    ("Shanghai", "China"): 26320000,
+    ("Guangzhou", "China"): 18812000,
+    ("Shenzhen", "China"): 17500000,
+    ("Chengdu", "China"): 16330000
+}
 
 def get_random_city_country():
+    elements = list(cities_countries.keys())
+    weights = list(cities_countries.values())
+
     # Select a random city-country pair
-    city_country = random.choice(cities_countries)
+    city_country = random.choices(elements, weights=weights, k=1)[0]
+
     # Format the result as a string
-    return f"{city_country['City']}, {city_country['Country']}"
+    return f"{city_country[0]}, {city_country[1]}"
 
 
-from datetime import datetime, timedelta
-import random
+
 
 def get_random_date(start_date, end_date):
     """
@@ -73,30 +104,28 @@ def get_random_date(start_date, end_date):
 
 
 def get_random_culinary_type():
-    culinary_types = [
-        "Italian",
-        "Chinese",
-        "Mexican",
-        "Indian",
-        "French",
-        "Thai",
-        "Japanese",
-        "Greek",
-        "Spanish",
-        "American",
-        "Mediterranean",
-        "Vietnamese",
-        "Turkish",
-        "Lebanese",
-        "Korean",
-        "Brazilian",
-        "Moroccan",
-        "Caribbean",
-        "Ethiopian",
-        "German"
-    ]
+    culinary_types = {
+        "Italian" : 1,
+        "Chinese" : 1,
+        "Mexican" : 1,
+        "Indian" : 1,
+        "French" : 1,
+        "Thai" : 1,
+        "Japanese" : 1,
+        "Greek" : 1,
+        "German " : 1
+    }
+    weighted_culinary_types = {key: random.randint(1, 20) for key in culinary_types.keys()}
+
+
+    culinary_typelist = list(weighted_culinary_types.keys())
+    weights = list(weighted_culinary_types.values())
     
-    return random.choice(culinary_types)
+    # Use random.choices to select an element based on weights
+    chosen_element = random.choices(culinary_typelist, weights=weights, k=1)[0]
+        
+    return chosen_element
+
 
 
 
@@ -153,7 +182,7 @@ like_entries = []
 save_sql = "INSERT INTO saved(USERID, IDPOST, SAVEDATE) VALUES\n"
 save_entries = []
 
-follow_sql = "INSERT INTO follows(USERID_FOLLOWER, USERID_FOLLOWED,FOLLOWDATE)"
+follow_sql = "INSERT INTO follows(USERID_FOLLOWER, USERID_FOLLOWED,FOLLOWDATE) VALUES\n"
 follow_entries = []
 
 
@@ -190,7 +219,7 @@ for i in range(1, nbuser+1):
             title = "recipe_title" + str(post_id)
             category = get_random_category()
             types = get_random_culinary_type()
-            recipe_entries.append(f"('{post_id}', '{title}', '{"default.png"}', '{random.randint(1,10)}', '{random.randint(10,50)}', '{random.randint(1,4)}', '{category}', '{types}')")
+            recipe_entries.append(f"('{post_id}', '{title}', '{"default.png"}', '{random.randint(0,10)}', '{random.randint(10,50)}', '{random.randint(1,4)}', '{category}', '{types}')")
         if(rng == 2):
             comment_entries.append(f"('{post_id}', '{random.randint(1,int(nbuser*nbpostspuser*0.9))}')")
         print("added post number : " + str(post_id))
@@ -219,7 +248,7 @@ for i in range(1, nbuser+1):
         list_temp.append(temp_id)
         save_entries.append(f"('{user_id}', '{temp_id}', '{get_random_date(account_creation,today)}')")
 
-    user_id += 1
+    
 
     list_temp = []
     for b in range (1,random.randint(1,nbmaxfollows)):
@@ -230,7 +259,7 @@ for i in range(1, nbuser+1):
         follow_entries.append(f"('{user_id}', '{temp_id}', '{get_random_date(account_creation,today)}')")
 
 
-
+    user_id += 1
     print("added user number : " + str(user_id))
 
 
