@@ -159,13 +159,12 @@ user_id = 1
 
 today = '2024-06-04'
 
-nbuser = 10
-nbpostspuser = 10
-nblikeuser = 10
-nbsaveduser = 10
+nbuser = 500
+nbpostspuser = 100
+nblikeuser = 1000
+nbsaveduser = 100
 
 for i in range(1, nbuser+1):
-    print("user added")
     first_name = random.choice(first_names)
     last_name = random.choice(last_names)
     username = f"{first_name.lower()}{last_name.lower()}{i}"
@@ -187,13 +186,13 @@ for i in range(1, nbuser+1):
             recipe_entries.append(f"('{post_id}', '{title}', '{"default.png"}', '{random.randint(1,10)}', '{random.randint(10,50)}', '{random.randint(1,4)}', '{category}', '{types}')")
         if(rng == 2):
             comment_entries.append(f"('{post_id}', '{random.randint(1,int(nbuser*nbpostspuser*0.9))}')")
+        print("added post number : " + str(post_id))
         post_id += 1
-    print("post added")
+        
 
 
     list_temp = []
     for z in range(1,nblikeuser+1):
-        print("like added")
 
         temp_id = random.randint(1,int(nbuser*nbpostspuser*0.9))
         while(temp_id in list_temp):
@@ -214,6 +213,7 @@ for i in range(1, nbuser+1):
         save_entries.append(f"('{user_id}', '{temp_id}', '{get_random_date(account_creation,today)}')")
 
     user_id += 1
+    print("added user number : " + str(user_id))
 
 
 
