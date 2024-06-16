@@ -153,9 +153,15 @@ like_entries = []
 save_sql = "INSERT INTO saved(USERID, IDPOST, SAVEDATE) VALUES\n"
 save_entries = []
 
+follow_sql = "INSERT INTO follows(USERID_FOLLOWER, USERID_FOLLOWED,FOLLOWDATE)"
+follow_entries = []
+
 
 post_id = 1
 user_id = 1
+
+#LAST POST ID = 
+#LAST USER ID = 501
 
 today = '2024-06-04'
 
@@ -163,6 +169,7 @@ nbuser = 500
 nbpostspuser = 100
 nblikeuser = 1000
 nbsaveduser = 100
+nbmaxfollows = 300
 
 for i in range(1, nbuser+1):
     first_name = random.choice(first_names)
@@ -192,7 +199,7 @@ for i in range(1, nbuser+1):
 
 
     list_temp = []
-    for z in range(1,nblikeuser+1):
+    for z in range(1,random.randint(1,nblikeuser+1)):
 
         temp_id = random.randint(1,int(nbuser*nbpostspuser*0.9))
         while(temp_id in list_temp):
@@ -203,7 +210,7 @@ for i in range(1, nbuser+1):
         like_entries.append(f"('{user_id}', '{temp_id}', '{get_random_date(account_creation,today)}')")
 
     list_temp = []
-    for a in range(1,nbsaveduser):
+    for a in range(1,random.randint(1,nbsaveduser)):
 
         temp_id = random.randint(1,int(nbuser*nbpostspuser*0.9))
         while(temp_id in list_temp):
@@ -213,6 +220,17 @@ for i in range(1, nbuser+1):
         save_entries.append(f"('{user_id}', '{temp_id}', '{get_random_date(account_creation,today)}')")
 
     user_id += 1
+
+    list_temp = []
+    for b in range (1,random.randint(1,nbmaxfollows)):
+        temp_id = random.randint(1,nbuser)
+        while(temp_id in list_temp):
+            temp_id = random.randint(1,int(nbuser))
+        list_temp.append(temp_id)
+        follow_entries.append(f"('{user_id}', '{temp_id}', '{get_random_date(account_creation,today)}')")
+
+
+
     print("added user number : " + str(user_id))
 
 
@@ -227,6 +245,7 @@ recipe_sql += ",\n".join(recipe_entries) + ";\n\n"
 comment_sql += ",\n".join(comment_entries) + ";\n\n"
 like_sql += ",\n".join(like_entries) + ";\n\n"
 save_sql += ",\n".join(save_entries) + ";\n\n"
+follow_sql += ",\n".join(follow_entries) + ";\n\n"
 
 
 filename = 'letemcook_data.sql'
@@ -240,6 +259,7 @@ with open(filename, 'w', encoding='utf-8') as file:
     file.write(comment_sql)
     file.write(like_sql)
     file.write(save_sql)
+    file.write(follow_sql)
 
 
 
